@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Briefcase, MapPin, Users, Calendar, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const Route = createFileRoute("/careers")({
   head: () => ({
@@ -33,13 +34,9 @@ function Careers() {
   const { data: jobs, isLoading } = useQuery({
     queryKey: ["jobs"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("jobs")
-        .select("*")
-        .eq("is_active", true)
-        .order("posted_at", { ascending: false });
-      if (error) throw error;
-      return data as Job[];
+      const res = await fetch(`${API_URL}/api/jobs`);
+      if (!res.ok) throw new Error("Failed to fetch jobs");
+      return res.json() as Promise<Job[]>;
     },
   });
 
@@ -105,20 +102,22 @@ function ApplyModal({ job, onClose }: { job: Job; onClose: () => void }) {
       if (file.type !== "application/pdf") throw new Error("Resume must be a PDF.");
       if (file.size > 5 * 1024 * 1024) throw new Error("Resume must be 5MB or smaller.");
 
-      const ext = "pdf";
-      const path = `${job.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("resumes").upload(path, file, { contentType: "application/pdf" });
-      if (upErr) throw upErr;
+      const formData = new FormData();
+      formData.append("fullName", form.fullName);
+      formData.append("email", form.email);
+      formData.append("phone", form.phone);
+      formData.append("jobId", job.id);
+      formData.append("jobTitle", job.title);
+      formData.append("resume", file);
 
-      const { error } = await supabase.from("applications").insert({
-        job_id: job.id,
-        job_title: job.title,
-        full_name: form.fullName,
-        email: form.email,
-        phone: form.phone,
-        resume_url: path,
+      const res = await fetch(`${API_URL}/api/applications`, {
+        method: "POST",
+        body: formData,
       });
-      if (error) throw error;
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to submit application");
+      }
     },
     onSuccess: () => {
       toast.success("Application submitted", { description: `Thanks for applying to ${job.title}. Our team will be in touch.` });
@@ -138,10 +137,7 @@ function ApplyModal({ job, onClose }: { job: Job; onClose: () => void }) {
           </div>
           <button onClick={onClose} aria-label="Close" className="rounded-md p-1 hover:bg-secondary"><X className="h-5 w-5" /></button>
         </div>
-        <form
-          className="mt-6 space-y-4"
-          onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }}
-        >
+        <form className="mt-6 space-y-4" onSubmit={(e) => { e.preventDefault(); mutation.mutate(); }}>
           <Field label="Full name" required>
             <input required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className="input" />
           </Field>

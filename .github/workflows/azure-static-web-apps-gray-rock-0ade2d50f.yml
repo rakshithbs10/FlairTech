@@ -18,7 +18,6 @@ jobs:
           node-version: '22'
 
       - name: Install Bun and Build
-        working-directory: ./crafted-click-code-main
         run: |
           npm install -g bun
           bun install
@@ -27,9 +26,10 @@ jobs:
       - name: Prepare deployment package
         run: |
           mkdir -p deploy
-          cp -r ./crafted-click-code-main/dist deploy/dist
-          cp ./crafted-click-code-main/package.json deploy/package.json
-          echo "node dist/server/server.js" > deploy/startup.sh
+          cp -r dist/client deploy/public
+          cp package.json deploy/package.json
+          cp server.mjs deploy/server.mjs
+          cd deploy && npm install express --save
 
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
