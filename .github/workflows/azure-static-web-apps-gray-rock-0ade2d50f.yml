@@ -26,9 +26,10 @@ jobs:
       - name: Prepare deployment package
         run: |
           mkdir -p deploy
-          cp -r dist deploy/dist
+          cp -r dist/client deploy/public
           cp package.json deploy/package.json
-          cd deploy && npm install --omit=dev
+          cp server.mjs deploy/server.mjs
+          cd deploy && npm install express --save
 
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
