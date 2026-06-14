@@ -1,17 +1,4 @@
 import "dotenv/config";
-
-// Application Insights — must be before everything else
-if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-  const appInsights = require("applicationinsights");
-  appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
-    .setAutoDependencyCorrelation(true)
-    .setAutoCollectRequests(true)
-    .setAutoCollectPerformance(true)
-    .setAutoCollectExceptions(true)
-    .setAutoCollectDependencies(true)
-    .start();
-}
-
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -28,21 +15,22 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 app.use(cors({ origin: process.env.FRONTEND_URL || "*" }));
 app.use(express.json());
-
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-  })
-);
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 
 app.use("/api/health", healthRouter);
 app.use("/api/jobs", jobsRouter);
 app.use("/api/applications", applicationsRouter);
 app.use("/api/contacts", contactsRouter);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+server.on("error", (err) => {
+  console.error("Server error:", err);
+});
+
+process.on("SIGTERM", () => server.close(() => process.exit(0)));
+process.on("SIGINT", () => server.close(() => process.exit(0)));
 
 export default app;

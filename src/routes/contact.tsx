@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Mail, MapPin, Clock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -22,8 +23,15 @@ function Contact() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("contacts").insert(form);
-      if (error) throw error;
+      const res = await fetch(`${API_URL}/api/contacts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to send message");
+      }
     },
     onSuccess: () => {
       toast.success("Message sent", { description: "Thanks for contacting FlairTech Solutions, we'll be in touch shortly." });
@@ -75,10 +83,8 @@ function Contact() {
 
         <div className="space-y-6 lg:col-span-2">
           <h2 className="text-2xl font-bold">Office locations</h2>
-
           <OfficeCard title="United States — Headquarters" address={["6900 Dallas Pkwy, Suite 200", "Plano, TX 75024, USA"]} hours="Mon – Fri, 9:00 AM – 6:00 PM CST" />
           <OfficeCard title="India — Delivery Center" address={["Cyber Towers, HITEC City", "Hyderabad, Telangana 500081"]} hours="Mon – Fri, 9:30 AM – 6:30 PM IST" />
-
           <div className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
             <h3 className="font-semibold">HR & Careers</h3>
             <a href="mailto:hr@flairtechsolutions.com" className="mt-2 flex items-center gap-2 text-sm text-brand hover:underline">
