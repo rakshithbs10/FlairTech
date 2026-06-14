@@ -39,7 +39,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "./crafted-click-code-main"
-          output_location: "dist"
+          output_location: "dist/client"
           skip_app_build: true
 
   close_pull_request_job:
