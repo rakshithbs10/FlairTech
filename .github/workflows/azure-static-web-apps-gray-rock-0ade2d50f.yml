@@ -23,17 +23,12 @@ jobs:
           bun install
           bun run build
 
-      - name: List build output
-        run: |
-          echo "=== dist ===" && ls dist/
-          echo "=== dist/server ===" && ls dist/server/
-
       - name: Prepare deployment package
         run: |
           mkdir -p deploy
           cp -r dist deploy/dist
           cp package.json deploy/package.json
-          cp bun.lock deploy/bun.lock || true
+          cd deploy && npm install --omit=dev
 
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
