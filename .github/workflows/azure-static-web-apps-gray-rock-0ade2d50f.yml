@@ -27,9 +27,8 @@ jobs:
         run: |
           mkdir -p deploy/public
           cp -r dist/client/. deploy/public/
-          cp package.json deploy/package.json
           cp server.mjs deploy/server.mjs
-          cd deploy && npm install express --save
+          echo '{"name":"flairtechsolutions","version":"1.0.0","type":"module","scripts":{"start":"node server.mjs"},"dependencies":{"express":"^4.18.2"}}' > deploy/package.json
 
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
