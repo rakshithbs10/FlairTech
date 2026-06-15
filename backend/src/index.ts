@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import path from "path";
 
 import jobsRouter from "./routes/jobs";
 import applicationsRouter from "./routes/applications";
@@ -22,7 +23,14 @@ app.use("/api/jobs", jobsRouter);
 app.use("/api/applications", applicationsRouter);
 app.use("/api/contacts", contactsRouter);
 
-const server = app.listen(PORT, () => {
+// Serve frontend static files
+const frontendPath = path.join(__dirname, "../../public");
+app.use(express.static(frontendPath));
+app.use((req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
 
