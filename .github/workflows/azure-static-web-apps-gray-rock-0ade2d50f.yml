@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  build_and_deploy:
+  build_and_deploy_frontend:
     runs-on: ubuntu-latest
-    name: Build and Deploy
+    name: Build and Deploy Frontend
     steps:
       - uses: actions/checkout@v3
 
@@ -19,28 +19,15 @@ jobs:
 
       - name: Build Frontend
         run: |
-          npm install -g bun
-          bun install
-          bun run build
-
-      - name: Build Backend
-        working-directory: ./backend
-        run: |
           npm install
           npm run build
 
-      - name: Prepare deployment package
-        run: |
-          mkdir -p deploy/public
-          cp -r dist/client/. deploy/public/
-          cp index.html deploy/public/index.html
-          cp -r backend/dist deploy/dist
-          cp backend/package.json deploy/package.json
-          printf '[config]\ncommand = npm install --omit=dev' > deploy/.deployment
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
+      - name: Deploy Frontend to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
         with:
-          app-name: flairtechsolutions-api
-          publish-profile: ${{ secrets.AZURE_API_PUBLISH_PROFILE }}
-          package: ./deploy
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_ROCK_0ADE2D50F }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/"
+          output_location: "dist"
+          skip_app_build: true
