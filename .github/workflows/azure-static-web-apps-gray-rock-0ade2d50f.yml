@@ -31,10 +31,12 @@ jobs:
 
       - name: Prepare deployment package
         run: |
-          mkdir -p deploy
+          mkdir -p deploy/public
+          cp -r dist/client/. deploy/public/
+          cp index.html deploy/public/index.html
           cp -r backend/dist deploy/dist
-          cp -r dist/client deploy/public
           cp backend/package.json deploy/package.json
+          printf '[config]\ncommand = npm install --omit=dev' > deploy/.deployment
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
