@@ -1,19 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Building2, MapPin } from "lucide-react";
 
-export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About Us — FlairTech Solutions" },
-      { name: "description", content: "FlairTech Solutions is a global IT consulting partner with offices in the US and India. Learn about our mission and values." },
-      { property: "og:title", content: "About FlairTech Solutions" },
-      { property: "og:description", content: "Our mission, our people, and our global presence." },
-    ],
-  }),
-  component: About,
-});
-
-function About() {
+export default function About() {
   return (
     <div>
       <section className="bg-[image:var(--gradient-hero)] py-20 text-primary-foreground">

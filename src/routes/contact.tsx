@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Mail, MapPin, Clock, Loader2 } from "lucide-react";
@@ -6,19 +5,7 @@ import { toast } from "sonner";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact Us — FlairTech Solutions" },
-      { name: "description", content: "Get in touch with FlairTech Solutions. Offices in Plano, TX (USA) and Hyderabad (India)." },
-      { property: "og:title", content: "Contact FlairTech Solutions" },
-      { property: "og:description", content: "Reach our US and India teams for new projects, careers, and partnerships." },
-    ],
-  }),
-  component: Contact,
-});
-
-function Contact() {
+export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
 
   const mutation = useMutation({

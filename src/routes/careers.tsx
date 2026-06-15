@@ -1,22 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Briefcase, MapPin, Users, Calendar, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
-export const Route = createFileRoute("/careers")({
-  head: () => ({
-    meta: [
-      { title: "Careers — FlairTech Solutions" },
-      { name: "description", content: "Join FlairTech Solutions. Browse open roles across our US and India offices and apply online." },
-      { property: "og:title", content: "Careers at FlairTech Solutions" },
-      { property: "og:description", content: "Open roles across consulting, engineering, BI, and QA." },
-    ],
-  }),
-  component: Careers,
-});
 
 type Job = {
   id: string;
@@ -28,7 +15,7 @@ type Job = {
   posted_at: string;
 };
 
-function Careers() {
+export default function Careers() {
   const [applyJob, setApplyJob] = useState<Job | null>(null);
 
   const { data: jobs, isLoading } = useQuery({

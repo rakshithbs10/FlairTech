@@ -1,19 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { SERVICES } from "@/lib/services";
 
-export const Route = createFileRoute("/services")({
-  head: () => ({
-    meta: [
-      { title: "Services — FlairTech Solutions" },
-      { name: "description", content: "BI, Architecture, ERP, Infrastructure, QA, and Database services from FlairTech Solutions." },
-      { property: "og:title", content: "Services — FlairTech Solutions" },
-      { property: "og:description", content: "Six service lines built for enterprise outcomes." },
-    ],
-  }),
-  component: Services,
-});
-
-function Services() {
+export default function Services() {
   return (
     <div>
       <section className="bg-[image:var(--gradient-hero)] py-20 text-primary-foreground">

@@ -1,22 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowRight, Quote } from "lucide-react";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
 import { SERVICES } from "@/lib/services";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "FlairTech Solutions — Enterprise IT Consulting" },
-      { name: "description", content: "Welcome to FlairTech Solutions. We deliver BI, ERP, Cloud, QA, and Database services to enterprises across the US and India." },
-      { property: "og:title", content: "FlairTech Solutions — Enterprise IT Consulting" },
-      { property: "og:description", content: "BI, ERP, Cloud, QA, and Database services for modern enterprises." },
-    ],
-  }),
-  component: Home,
-});
 
 const slides = [
   { image: hero1, eyebrow: "Trusted partner", title: "Engineering the digital backbone of modern enterprises", body: "From data platforms to cloud-native apps, we ship technology that scales with your business." },
@@ -30,7 +18,7 @@ const testimonials = [
   { quote: "Best QA partner we've worked with. They built automation that genuinely sped up our releases.", author: "Head of Engineering", company: "FinTech Platform" },
 ];
 
-function Home() {
+export default function Home() {
   const [i, setI] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setI((p) => (p + 1) % slides.length), 6000);
@@ -39,7 +27,6 @@ function Home() {
 
   return (
     <div>
-      {/* Hero carousel */}
       <section className="relative isolate overflow-hidden">
         <div className="relative h-[78vh] min-h-[520px] w-full">
           {slides.map((s, idx) => (
@@ -69,7 +56,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Welcome */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid items-start gap-12 lg:grid-cols-2">
           <div>
@@ -83,7 +69,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Services overview */}
       <section className="bg-secondary/40 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between gap-6 flex-wrap">
@@ -112,7 +97,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">Client voices</p>
         <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Trusted by teams that ship</h2>
